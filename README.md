@@ -4,30 +4,7 @@ This repo contains a script and assets that produces a disk image, with docker, 
 
 ## Usage
 
-By default, mkimage.sh will create an image with a 50MB boot filesystem and a 900MB root filesystem.  If you wish to change these defaults, create a ```settings.conf``` file using ```settings.conf.example``` as a template.
-
-```bash
-IMAGEURL="http://mirror.pnl.gov/fedora/linux/releases/23/Images/armhfp/Fedora-Minimal-armhfp-23-10-sda.raw.xz"
-
-# size in MB size of the boot partition (vfat) in MB
-BOOTSIZE=100
-
-# size of the root partition (ext4) in MB
-#
-# NOTE
-# The rootfs on the minimal image is ext4. On the server image, it is XFS.
-# Because the upstream raspberrypi/linux prebuilt kernel does not
-# build-in XFS support (it compiles it as a module), an XFS rootfs is
-# currently not supported.
-ROOTSIZE=1800
-
-# create compressed image
-COMPRESS=0
-
-# don't run initial-setup on first boot
-# https://fedoraproject.org/wiki/InitialSetup
-DISABLE_INITIAL_SETUP=1
-```
+By default, mkimage.sh will create an image with a 100MB boot filesystem and a 1900MB root filesystem.  If you wish to change these defaults, update the ```settings.conf``` file.
 
 Then simply run the script as root (root privileges are needed to mount filesystem images as loop block devices)
 
