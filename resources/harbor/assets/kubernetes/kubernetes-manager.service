@@ -1,0 +1,14 @@
+[Unit]
+Description=HarborOS: Kubernetes Manager
+After=etcd.service docker.service
+Before=kube-proxy.service kubelet.service kube-apiserver.service kube-controller-manager.service kube-scheduler.service kubernetes-skydns.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/var/usrlocal/bin/kubernetes-preflight.sh
+ExecStart=/bin/bash -c "echo 'node configured'"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=kube-proxy.service kubelet.service kube-apiserver.service kube-controller-manager.service kube-scheduler.service kubernetes-skydns.service

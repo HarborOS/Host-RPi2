@@ -1,0 +1,6 @@
+[Path]
+PathExists=/run/flannel/subnet.env
+Unit=docker.service
+
+[Install]
+WantedBy=multi-user.target

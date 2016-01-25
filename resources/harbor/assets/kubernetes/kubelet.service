@@ -1,0 +1,47 @@
+[Unit]
+Description=Kubernetes Kubelet Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+After=etcd.service docker.service
+Requires=etcd.service docker.service
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/kubernetes/kubelet
+EnvironmentFile=/etc/kubernetes/deploy.env
+
+ExecStartPre=-/usr/bin/docker kill kubelet
+ExecStartPre=-/usr/bin/docker rm kubelet
+ExecStartPre=/bin/docker run \
+            --name=kubelet \
+            --net=host \
+            --pid=host \
+            --privileged \
+            --restart=always \
+            -d \
+            -v /sys:/sys:ro \
+            -v /var/run:/var/run:rw \
+            -v /:/rootfs:ro \
+            -v /dev:/dev \
+            -v /var/lib/docker/:/var/lib/docker:rw \
+            -v /var/lib/kubelet/:/var/lib/kubelet:rw \
+            -v /etc/os-release:/etc/os-release:ro \
+            $KUBERNETES_IMAGE /hyperkube kubelet \
+            	    $KUBE_LOGTOSTDERR \
+            	    $KUBE_LOG_LEVEL \
+            	    $KUBELET_API_SERVER \
+            	    $KUBELET_ADDRESS \
+            	    $KUBELET_PORT \
+            	    $KUBELET_HOSTNAME \
+            	    $KUBE_ALLOW_PRIV \
+            	    $KUBELET_ARGS \
+                  --containerized
+ExecStart=/usr/bin/docker logs -f kubelet
+ExecStop=/usr/bin/docker stop kubelet
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

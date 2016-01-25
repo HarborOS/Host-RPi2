@@ -1,0 +1,13 @@
+[Unit]
+Description=HarborOS: SkyDNS Preflight
+After=etcd.service
+Requires=etcd.service
+Before=skydns.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/var/usrlocal/bin/skydns-preflight.sh
+
+[Install]
+WantedBy=multi-user.target

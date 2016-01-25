@@ -1,0 +1,18 @@
+[Unit]
+Description=Network Manager Wait Online
+Requisite=NetworkManager.service
+After=NetworkManager.service
+Wants=network.target
+Before=network.target network-online.target
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=/usr/bin/nm-online -s -q --timeout=30
+ExecStartPre=/bin/bash -c "while ! ping -c1 www.google.com &>/dev/null; do :; done"
+ExecStart=/bin/tail -f /dev/null
+Restart=on-failure
+RestartSec=10
+
+
+[Install]
+WantedBy=multi-user.target

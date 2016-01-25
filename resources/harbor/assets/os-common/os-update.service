@@ -1,0 +1,13 @@
+[Unit]
+Description=HarborOS: OS-Updater: Manager
+After=network.target NetworkManager-wait-online.service
+Wants=network.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/var/usrlocal/bin/common-packages.sh
+ExecStart=/bin/bash -c "echo 'node configured'"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=network-online.target

@@ -1,0 +1,33 @@
+[Unit]
+Description=Kubernetes Controller Manager
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+After=etcd.service docker.service
+Requires=etcd.service docker.service
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/kubernetes/controller-manager
+EnvironmentFile=-/etc/kubernetes/deploy.env
+
+ExecStartPre=-/usr/bin/docker kill kube-controller-manager
+ExecStartPre=-/usr/bin/docker rm kube-controller-manager
+ExecStartPre=/bin/docker run -d \
+            --name=kube-controller-manager \
+            --net='host' \
+            -v /etc/ssl/certs:/etc/ssl/certs \
+            -v /etc/kubernetes/ssl:/etc/kubernetes/ssl \
+            $KUBERNETES_IMAGE /hyperkube controller-manager \
+                $KUBE_LOGTOSTDERR \
+          	    $KUBE_LOG_LEVEL \
+          	    $KUBE_MASTER \
+          	    $KUBE_CONTROLLER_MANAGER_ARGS
+ExecStart=/usr/bin/docker logs -f kube-controller-manager
+ExecStop=/usr/bin/docker stop kube-controller-manager
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=HarborOS: Docker Manager
+After=etcd.service
+Before=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/var/usrlocal/bin/docker-preflight.sh
+ExecStart=/bin/bash -c "echo 'node configured'"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=docker.service

@@ -1,0 +1,34 @@
+[Unit]
+Description=Kubernetes Kube-Proxy Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+After=etcd.service docker.service
+Requires=etcd.service docker.service
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/kubernetes/proxy
+EnvironmentFile=-/etc/kubernetes/deploy.env
+
+ExecStartPre=-/usr/bin/docker kill kube-proxy
+ExecStartPre=-/usr/bin/docker rm kube-proxy
+ExecStartPre=/bin/docker run  -d \
+            --net='host' \
+            --privileged \
+            --name=kube-proxy \
+            -v /etc/ssl/certs:/etc/ssl/certs \
+            -v /etc/kubernetes/ssl:/etc/kubernetes/ssl \
+            $KUBERNETES_IMAGE /hyperkube proxy \
+                $KUBE_LOGTOSTDERR \
+          	    $KUBE_LOG_LEVEL \
+          	    $KUBE_MASTER \
+          	    $KUBE_PROXY_ARGS
+ExecStart=/usr/bin/docker logs -f kube-proxy
+ExecStop=/usr/bin/docker stop kube-proxy
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=HarborOS: Flanneld Configuration
+After=etcd.service
+Requires=etcd.service
+
+[Service]
+TimeoutStartSec=0
+Type=oneshot
+User=root
+ExecStartPre=/bin/bash -c "while ! echo 'HarborOS: ETCD: now up' | etcdctl member list ; do sleep 1; done"
+ExecStart=/var/usrlocal/bin/flanneld-preflight.sh
+
+[Install]
+WantedBy=multi-user.target

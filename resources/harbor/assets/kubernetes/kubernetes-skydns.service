@@ -1,0 +1,26 @@
+[Unit]
+Description=HarborOS: Kube2sky Service
+After=docker.service
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+TimeoutStartSec=0
+EnvironmentFile=/etc/os-common/common.env
+
+ExecStartPre=-/bin/docker stop kube2sky
+ExecStartPre=-/bin/docker kill kube2sky
+ExecStartPre=-/bin/docker rm -v kube2sky
+
+ExecStartPre=/var/usrlocal/bin/kubernetes-skydns-flight.sh
+ExecStart=/bin/docker logs -f kube2sky
+
+ExecStop=-/bin/docker stop kube2sky
+ExecStop=-/bin/docker kill kube2sky
+ExecStop=-/bin/docker rm -v kube2sky
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+[Unit]
+Description=HarborOS: Skydns Server
+After=etcd.service skydns-preflight.service
+Requires=etcd.service
+Wants=network-online.target
+
+[Service]
+TimeoutStartSec=0
+ExecStart=/var/usrlocal/bin/skydns-start.sh
+ExecStop=/var/usrlocal/bin/skydns-stop.sh
+
+[Install]
+WantedBy=docker.service

@@ -1,0 +1,25 @@
+[Unit]
+Description=Etcd Server
+After=network-online.target etcd-manager.service
+Requires=etcd-manager.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+# etcd logs to the journal directly, suppress double logging
+StandardOutput=null
+WorkingDirectory=/var/lib/etcd/
+EnvironmentFile=-/etc/etcd/etcd.conf
+User=etcd
+TimeoutStartSec=0
+ExecStart=/usr/bin/etcd \
+  -name ${ETCD_NAME} \
+  -initial-advertise-peer-urls ${ETCD_INITIAL_ADVERTISE_PEER_URLS} \
+  -listen-peer-urls ${ETCD_LISTEN_PEER_URLS} \
+  -listen-client-urls ${ETCD_LISTEN_CLIENT_URLS} \
+  -discovery ${ETCD_DISCOVERY}
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

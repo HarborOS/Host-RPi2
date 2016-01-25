@@ -1,0 +1,17 @@
+[Unit]
+Description=HarborOS: SkyDNS: IPA: Monitor
+After=docker.service skydns.service freeipa.service
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+TimeoutStartSec=0
+TimeoutStopSec=1
+ExecStart=/var/usrlocal/bin/skydns-freeipa-monitor.sh
+ExecStop=/var/usrlocal/bin/skydns-freeipa-stop.sh
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

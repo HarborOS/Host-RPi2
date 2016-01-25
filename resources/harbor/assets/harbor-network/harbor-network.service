@@ -1,0 +1,14 @@
+[Unit]
+Description=HarborOS: Network: Manager
+After=network.target
+Before=NetworkManager-wait-online.service
+Wants=network.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/var/usrlocal/bin/network-preflight.sh
+ExecStart=/bin/bash -c "echo 'node configured'"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

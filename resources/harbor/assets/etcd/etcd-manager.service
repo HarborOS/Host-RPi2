@@ -1,0 +1,14 @@
+[Unit]
+Description=HarborOS: Etcd: Manager
+After=network-online.target
+Before=etcd.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/var/usrlocal/bin/etcd-preflight.sh
+ExecStart=/bin/bash -c "echo 'node configured'"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=etcd.service

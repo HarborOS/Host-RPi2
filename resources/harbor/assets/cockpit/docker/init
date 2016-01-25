@@ -1,0 +1,33 @@
+#!/bin/sh -eu
+
+# This is the startup script for cockpit-ws when run in a privileged container
+#
+# The host file system must be mounted at /host
+#
+
+cd /
+PATH="/bin:/sbin"
+
+# Run the install command just to be sure
+/container/install.sh || exit $?
+
+set +x
+
+/bin/mount --bind /host/usr/share/pixmaps /usr/share/pixmaps
+/bin/mount --bind /host/var /var
+
+# And run cockpit-ws
+exec /usr/bin/nsenter --net=/container/target-namespace/ns/net --uts=/container/target-namespace/ns/uts -- /usr/libexec/cockpit-ws "$@"
+# Make sure that we have required directories in the host
+mkdir -p /etc/cockpit/ws-certs.d
+chmod 755 /etc/cockpit/ws-certs.d
+chown root:root /etc/cockpit/ws-certs.d
+
+mkdir -p /var/lib/cockpit
+chmod 775 /var/lib/cockpit
+chown root:wheel /var/lib/cockpit
+
+# Ensure we have certificates
+
+/usr/sbin/remotectl certificate --ensure
+/usr/libexec/cockpit-ws

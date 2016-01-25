@@ -1,0 +1,11 @@
+[Unit]
+Description=HarborOS: SkyDNS Host Reset
+After=network.target
+Before=etcd.service
+
+[Service]
+Type=oneshot
+ExecStart=/var/usrlocal/bin/skydns-stop.sh
+
+[Install]
+WantedBy=multi-user.target
