@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/bin/docker -H unix:///var/run/docker-bootstrap.sock $@
