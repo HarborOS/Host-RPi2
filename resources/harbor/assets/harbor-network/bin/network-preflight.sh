@@ -33,7 +33,7 @@ if [[ "${ROLE}" == "master" ]]
   HOSTNAME=master
 elif [[ "${ROLE}" == "node" ]]
   then
-  HOSTNAME=${IP_1}-${IP_2}-${IP_3}-${IP_4}
+  HOSTNAME=$(cat /etc/machine-id | cksum | awk '{print $1}')
 fi
 echo $HOSTNAME
 
