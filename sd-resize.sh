@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SD_DEV=sdf
+SD_DEV=sdc
 
 echo "Resizing Disc Image"
 echo -e "d\n2\nn\np\n2\n\n\nw" | fdisk /dev/${SD_DEV}
