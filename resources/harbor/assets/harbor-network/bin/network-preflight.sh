@@ -28,14 +28,6 @@ N=3; IP_STEP_3=$(echo $FIXED_IP_STEP | awk -F'.' -v N=$N '{print $N}')
 N=4; IP_STEP_4=$(echo $FIXED_IP_STEP | awk -F'.' -v N=$N '{print $N}')
 
 
-if [[ "${ROLE}" == "master" ]]
-  then
-  HOSTNAME=master
-elif [[ "${ROLE}" == "node" ]]
-  then
-  HOSTNAME=$(cat /etc/machine-id | cksum | awk '{print $1}')
-fi
-echo $HOSTNAME
 
 
 if [ ! -f /etc/harbor-network/status ]; then
@@ -56,7 +48,7 @@ EOF
       HOSTNAME=master
     elif [[ "${ROLE}" == "node" ]]
       then
-      HOSTNAME=${IP_1}-${IP_2}-${IP_3}-${IP_4}
+      HOSTNAME=$(cat /etc/machine-id | cksum | awk '{print $1}')
     fi
     echo $HOSTNAME.$DOMAIN > /etc/hostname
     echo "$FIXED_IP_START $HOSTNAME.$DOMAIN $HOSTNAME" >> /etc/hosts
